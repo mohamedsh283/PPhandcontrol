@@ -17,14 +17,14 @@ animations advance a step at a time, just as they do with the arrow keys.
 
 ## Download and run
 
-**[Open the ready-to-run PPhandcontrol folder](Download/PPhandcontrol)** — it
-contains **PPhandcontrol.exe**, **License.txt**, **How to use.txt**, and all required
-runtime files. This folder is already extracted in the repository.
+### [⬇ Download PPhandcontrol for Windows](https://github.com/mohamedsh283/PPhandcontrol/releases/latest/download/PPhandcontrol-windows-x64.zip)
 
-1. [Download the repository ZIP](https://github.com/mohamedsh283/PPhandcontrol/archive/refs/heads/main.zip)
-   (or choose **Code → Download ZIP** on GitHub).
-2. Extract it, then open **PPhandcontrol-main → Download → PPhandcontrol**.
-   Keep the whole PPhandcontrol folder together, including `_internal`.
+**One click downloads the complete app folder as a ZIP:** **PPhandcontrol.exe**,
+**License.txt**, **How to use.txt**, and all required runtime files.
+
+1. Click **Download PPhandcontrol for Windows** above. The download starts directly.
+2. Right-click the downloaded ZIP, choose **Extract All**, and open the
+   **PPhandcontrol** folder. Keep the whole folder together, including `_internal`.
 3. Open `PPhandcontrol.exe`. No Python installation or administrator access is required.
 4. Choose your camera and navigation profile. The app always starts **paused**.
 5. Open your presentation or PDF, start its presentation/fullscreen mode, and
@@ -33,9 +33,8 @@ runtime files. This folder is already extracted in the repository.
 
 Read [How to use.txt](Download/PPhandcontrol/How%20to%20use.txt) and
 [License.txt](Download/PPhandcontrol/License.txt) inside the app folder.
-For a smaller download containing just the app folder, use
-`PPhandcontrol-windows-x64.zip` from the
-[latest GitHub Release](https://github.com/mohamedsh283/PPhandcontrol/releases/latest).
+The [extracted app folder](Download/PPhandcontrol) is also available to browse
+in the repository.
 
 Open [`tutorial/index.html`](tutorial/index.html) in a browser for the illustrated,
 offline quick guide. The [complete tutorial](tutorial/README.md) includes viewer

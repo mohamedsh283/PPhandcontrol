@@ -14,6 +14,6 @@ This is the extracted application, with all its required runtime files.
 - **licenses/** and the credits/notices — retain these when sharing.
 - [tutorial/](tutorial/) — illustrated offline guide and validation notes.
 
-To get the complete folder, [download the repository ZIP](https://github.com/mohamedsh283/PPhandcontrol/archive/refs/heads/main.zip), extract it, and open **PPhandcontrol-main → Download → PPhandcontrol**. No Python installation is needed. Download the whole folder; the EXE alone is insufficient.
+### [⬇ Download PPhandcontrol for Windows](https://github.com/mohamedsh283/PPhandcontrol/releases/latest/download/PPhandcontrol-windows-x64.zip)
 
-For a smaller download containing only the app, use the [GitHub Release](https://github.com/mohamedsh283/PPhandcontrol/releases/latest).
+One click downloads this complete app folder as a ZIP. Choose **Extract All**, open the **PPhandcontrol** folder, and run **PPhandcontrol.exe**. No Python installation is needed. Keep the whole folder together; the EXE alone is insufficient.
