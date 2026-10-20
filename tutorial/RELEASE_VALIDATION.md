@@ -20,10 +20,15 @@ The local unsigned EXE could not be launched because Windows Application
 Control returned error 4551. The release workflow therefore requires the
 separate GitHub Windows runner to pass the frozen-app smoke test before it
 publishes a ZIP. The distributed `self-test.json` records that actual result.
+The first Windows CI build passed, including its frozen-app test:
+https://github.com/mohamedsh283/PPhandcontrol/actions/runs/39438289825
 
 Not established by these checks:
 
 - Real-hand recognition accuracy, including the 18/20 target in each direction.
+- Complete PowerPoint animation/slide navigation. A temporary slideshow accepted
+  an animation command, but the local unlicensed Office installation then
+  rejected automation with error 0x80048240, preventing a complete validation.
 - Acrobat/Reader, SumatraPDF and Google Slides end-to-end behavior.
 - Full live-presentation rehearsal with gestures while minimized.
 
