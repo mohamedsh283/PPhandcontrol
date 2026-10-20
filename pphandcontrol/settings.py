@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import tempfile
+from .gestures import MODES
 
 PROFILES = ("PowerPoint / Google Slides", "Adobe Acrobat / Reader", "SumatraPDF")
 SENSITIVITIES = ("Low", "Medium", "High")
@@ -16,7 +17,7 @@ SENSITIVITIES = ("Low", "Medium", "High")
 class Settings:
     camera: int = 0
     sensitivity: str = "Medium"
-    reverse: bool = False
+    mode: str = "Thumbs"
     profile: str = "PowerPoint / Google Slides"
 
     def __post_init__(self) -> None:
@@ -24,8 +25,8 @@ class Settings:
             raise ValueError("Camera must be an integer from 0 through 15")
         if self.sensitivity not in SENSITIVITIES:
             raise ValueError("Unknown sensitivity")
-        if type(self.reverse) is not bool:
-            raise ValueError("Reverse must be a boolean")
+        if self.mode not in MODES:
+            raise ValueError("Unknown gesture mode")
         if self.profile not in PROFILES:
             raise ValueError("Unknown navigation profile")
 

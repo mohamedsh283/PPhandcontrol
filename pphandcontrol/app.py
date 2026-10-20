@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw, ImageTk
 
 from . import __version__
 from .camera import TrackingWorker
-from .gestures import SwipeDetector
+from .gestures import MODES, create_detector
 from .paths import model_path, resource_root
 from .session import ControlSession
 from .settings import Settings, SettingsStore
@@ -34,14 +34,14 @@ class App:
         self.root.configure(bg="#f1f5f9")
         self.store = SettingsStore()
         self.settings = self.store.load()
-        self.session = ControlSession(SwipeDetector(self.settings.sensitivity, self.settings.reverse))
+        self.session = ControlSession(create_detector(self.settings.mode, self.settings.sensitivity))
         self.events = Queue(maxsize=1)
         self.worker = None
         self.closed = False
         self.last_draw = 0.0
         self.photo = None
         self.status = tk.StringVar(value="PAUSED · Starting camera…")
-        self.tracking = tk.StringVar(value="Hold one open palm still, then swipe horizontally.")
+        self.tracking = tk.StringVar(value="Thumbs up for Next; thumbs down for Previous.")
         self.last_action = tk.StringVar(value="Last action: none")
         self.notice = tk.StringVar()
         self.shortcut_notice = tk.StringVar()
@@ -88,7 +88,7 @@ class App:
         self.preview = tk.Canvas(left, bg="#0f172a", height=360, highlightthickness=0)
         self.preview.pack(fill="both", expand=True)
         self.preview.create_text(310, 175, text="Starting your camera…", fill="#cbd5e1", font=("Segoe UI", 14), tags="placeholder")
-        ttk.Label(left, text="← Swipe left: NEXT     |     Swipe right: PREVIOUS →", font=("Segoe UI Semibold", 11)).pack(anchor="center", pady=(12, 4))
+        ttk.Label(left, text="Thumbs up: NEXT     |     Thumbs down: PREVIOUS", font=("Segoe UI Semibold", 11)).pack(anchor="center", pady=(12, 4))
         self.direction_label = left.winfo_children()[-1]
         ttk.Label(left, textvariable=self.tracking, style="Muted.TLabel", wraplength=590).pack(anchor="w", pady=(4, 0))
         ttk.Label(left, textvariable=self.last_action, font=("Segoe UI Semibold", 11)).pack(anchor="w", pady=(8, 0))
@@ -108,8 +108,11 @@ class App:
         sensitivity = ttk.Combobox(right, textvariable=self.sensitivity_var, values=("Low", "Medium", "High"), state="readonly")
         sensitivity.pack(fill="x", pady=(5, 10))
         sensitivity.bind("<<ComboboxSelected>>", self.change_settings)
-        self.reverse_var = tk.BooleanVar(value=self.settings.reverse)
-        ttk.Checkbutton(right, text="Reverse swipe directions", variable=self.reverse_var, command=self.change_settings).pack(anchor="w", pady=(0, 10))
+        ttk.Label(right, text="Gesture mode").pack(anchor="w")
+        self.mode_var = tk.StringVar(value=self.settings.mode)
+        mode = ttk.Combobox(right, textvariable=self.mode_var, values=MODES, state="readonly")
+        mode.pack(fill="x", pady=(5, 10))
+        mode.bind("<<ComboboxSelected>>", self.change_settings)
         ttk.Label(right, text="Camera index (usually 0)").pack(anchor="w")
         camera_row = ttk.Frame(right)
         camera_row.pack(fill="x", pady=(5, 4))
@@ -117,14 +120,14 @@ class App:
         ttk.Spinbox(camera_row, from_=0, to=15, textvariable=self.camera_var, width=5).pack(side="left")
         ttk.Button(camera_row, text="Apply camera", command=self.apply_camera).pack(side="right")
         ttk.Button(right, text="Retry camera", command=self.restart_camera).pack(fill="x", pady=(5, 8))
-        ttk.Label(right, text="1. Choose your viewer.\n2. Resume gestures.\n3. Click the slides or PDF.\n4. Hold an open palm, then swipe.", style="Muted.TLabel").pack(anchor="w", pady=(0, 8))
+        ttk.Label(right, text="1. Choose mode and viewer.\n2. Resume gestures.\n3. Click the slides or PDF.\n4. Gesture, then relax to repeat.", style="Muted.TLabel").pack(anchor="w", pady=(0, 8))
         ttk.Button(right, text="Open quick tutorial", command=self.open_tutorial).pack(fill="x", pady=(0, 6))
         ttk.Button(right, text="Quit", command=self.close).pack(fill="x")
         self._directions()
 
     def _directions(self) -> None:
-        left, right = ("PREVIOUS", "NEXT") if self.settings.reverse else ("NEXT", "PREVIOUS")
-        self.direction_label.configure(text=f"← Swipe left: {left}     |     Swipe right: {right} →")
+        self.direction_label.configure(text=("Thumbs up: NEXT     |     Thumbs down: PREVIOUS" if self.settings.mode == "Thumbs"
+                                            else "Point & swipe: LEFT = NEXT     |     RIGHT = PREVIOUS"))
 
     def _shortcut(self, event, action: str):
         # Modified combinations belong to the global hotkey registration.
@@ -144,8 +147,9 @@ class App:
 
     def change_settings(self, _event=None) -> None:
         self.session.pause()
-        self.settings = replace(self.settings, sensitivity=self.sensitivity_var.get(), reverse=self.reverse_var.get(), profile=self.profile_var.get())
-        self.session.detector = SwipeDetector(self.settings.sensitivity, self.settings.reverse)
+        self.settings = replace(self.settings, sensitivity=self.sensitivity_var.get(), mode=self.mode_var.get(), profile=self.profile_var.get())
+        self.session.detector = create_detector(self.settings.mode, self.settings.sensitivity)
+        self.tracking.set(self.session.detector.status)
         self.notice.set("Settings changed. Gestures are paused; resume when ready.")
         self._save()
         self._directions()
@@ -179,7 +183,7 @@ class App:
         if not self.session.toggle():
             self.notice.set(self.session.error or "Wait for a camera image before resuming.")
         else:
-            self.notice.set("Gestures paused." if self.session.paused else "Gestures active. Click your presentation window, hold one open palm still, then swipe.")
+            self.notice.set("Gestures paused." if self.session.paused else "Gestures active. Click your presentation window. " + self.session.detector.status)
         self._status()
 
     def _status(self) -> None:
@@ -236,6 +240,9 @@ class App:
                             self.last_action.set(f"Last action: {action.upper()} · {self.settings.profile}")
                         else:
                             self.last_action.set("No command sent · " + self.controller.last_suppression_reason)
+                            # A gesture blocked by focus/modifiers was never delivered.
+                            # Allow a fresh hold once the viewer can receive input.
+                            self.session.detector.reset()
                     except Exception as exc:
                         self.session.pause()
                         self.notice.set(str(exc))

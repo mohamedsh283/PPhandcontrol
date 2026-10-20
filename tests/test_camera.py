@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from pphandcontrol.camera import CameraEvent, TrackingWorker, publish_latest
-from pphandcontrol.gestures import SwipeDetector
+from pphandcontrol.gestures import ThumbDetector
 from pphandcontrol.session import ControlSession
 
 
@@ -20,7 +20,7 @@ class CameraWorkerTests(unittest.TestCase):
         self.capture = Mock()
         self.capture.isOpened.return_value = True
         self.landmarker = Mock()
-        self.landmarker.detect_for_video.return_value = SimpleNamespace(hand_landmarks=[])
+        self.landmarker.recognize_for_video.return_value = SimpleNamespace(hand_landmarks=[], gestures=[])
         self.cv2 = SimpleNamespace(
             VideoCapture=Mock(return_value=self.capture),
             CAP_DSHOW=700, CAP_MSMF=1400,
@@ -35,10 +35,11 @@ class CameraWorkerTests(unittest.TestCase):
         self.mp = SimpleNamespace(
             tasks=SimpleNamespace(
                 BaseOptions=self.base_options,
+                components=SimpleNamespace(processors=SimpleNamespace(ClassifierOptions=Mock())),
                 vision=SimpleNamespace(
-                    HandLandmarkerOptions=self.hand_options,
+                    GestureRecognizerOptions=self.hand_options,
                     RunningMode=SimpleNamespace(VIDEO="video"),
-                    HandLandmarker=SimpleNamespace(create_from_options=self.factory),
+                    GestureRecognizer=SimpleNamespace(create_from_options=self.factory),
                 ),
             ),
             Image=Mock(side_effect=lambda **kwargs: SimpleNamespace(**kwargs)),
@@ -98,7 +99,7 @@ class CameraWorkerTests(unittest.TestCase):
         self.assertEqual(self.worker.stopping.wait.call_count, 4)
         self.assertIn("Navigation is paused", event.error)
         self.assertIn("Retry camera", event.error)
-        session = ControlSession(SwipeDetector())
+        session = ControlSession(ThumbDetector())
         session.generation = 7
         session.process(CameraEvent(7, event.timestamp), now=event.timestamp)
         self.assertTrue(session.toggle())
@@ -127,29 +128,32 @@ class CameraWorkerTests(unittest.TestCase):
         self.worker.run()
         event = self.events.get_nowait()
         self.assertIsNone(event.error)
-        self.assertEqual(self.landmarker.detect_for_video.call_count, 1)
+        self.assertEqual(self.landmarker.recognize_for_video.call_count, 1)
 
     def test_mirrors_before_inference_and_preserves_two_hand_mapping(self):
         self.stop_after_one_frame()
         left = [SimpleNamespace(x=index / 30, y=0.3, z=-0.01) for index in range(21)]
         right = [SimpleNamespace(x=0.9 - index / 30, y=0.7, z=0.01) for index in range(21)]
-        self.landmarker.detect_for_video.return_value = SimpleNamespace(hand_landmarks=[left, right])
+        self.landmarker.recognize_for_video.return_value = SimpleNamespace(hand_landmarks=[left, right], gestures=[[SimpleNamespace(category_name='Thumb_Up', score=.92)], [SimpleNamespace(category_name='Thumb_Down', score=.89)]])
         with patch("pphandcontrol.camera.monotonic", return_value=12.345):
             self.worker.run()
         self.cv2.flip.assert_called_once_with("bgr-frame", 1)
         self.cv2.cvtColor.assert_called_once_with(("mirrored", "bgr-frame", 1), 4)
-        image, timestamp_ms = self.landmarker.detect_for_video.call_args.args
+        image, timestamp_ms = self.landmarker.recognize_for_video.call_args.args
         self.assertEqual(image.data, ("rgb", ("mirrored", "bgr-frame", 1), 4))
         self.assertEqual(image.image_format, "srgb")
         self.assertEqual(timestamp_ms, 12345)
         event = self.events.get_nowait()
         self.assertEqual(event.frame, image.data)
         self.assertEqual(len(event.hands), 2)
+        self.assertEqual(event.hands[0].gesture, "Thumb_Up")
+        self.assertEqual(event.hands[1].gesture, "Thumb_Down")
+        self.assertEqual(event.hands[0].gesture_score, .92)
         self.assertEqual(event.hands[0].points, tuple((p.x, p.y, p.z) for p in left))
         self.assertEqual(event.hands[1].points, tuple((p.x, p.y, p.z) for p in right))
         self.assertTrue(all(hand.timestamp == 12.345 for hand in event.hands))
         self.assertEqual(self.hand_options.call_args.kwargs["num_hands"], 2)
-        self.assertEqual(self.hand_options.call_args.kwargs["min_tracking_confidence"], 0.6)
+        self.assertEqual(self.hand_options.call_args.kwargs["min_tracking_confidence"], 0.5)
         self.base_options.assert_called_once_with(model_asset_path="bundled-model.task")
 
     def test_video_timestamps_strictly_increase_with_same_clock_millisecond(self):
@@ -166,12 +170,12 @@ class CameraWorkerTests(unittest.TestCase):
         self.capture.read.side_effect = read
         with patch("pphandcontrol.camera.monotonic", return_value=1.0):
             self.worker.run()
-        self.assertEqual([call.args[1] for call in self.landmarker.detect_for_video.call_args_list],
+        self.assertEqual([call.args[1] for call in self.landmarker.recognize_for_video.call_args_list],
                          [1000, 1001, 1002])
 
     def test_inference_exception_publishes_error_and_releases_resources(self):
         self.capture.read.return_value = (True, "bgr-frame")
-        self.landmarker.detect_for_video.side_effect = RuntimeError("inference failed")
+        self.landmarker.recognize_for_video.side_effect = RuntimeError("inference failed")
         self.worker.run()
         self.assertEqual(self.events.get_nowait().error, "inference failed")
         self.capture.release.assert_called_once_with()

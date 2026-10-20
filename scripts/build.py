@@ -41,7 +41,7 @@ def reset_build_directory(path: Path) -> None:
 
 
 def verify_model() -> str:
-    model = ROOT / "models" / "hand_landmarker.task"
+    model = ROOT / "models" / "gesture_recognizer.task"
     checksum_file = model.with_suffix(".task.sha256")
     expected = checksum_file.read_text(encoding="utf-8").split()[0].lower()
     if len(expected) != 64 or any(char not in "0123456789abcdef" for char in expected):

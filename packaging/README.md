@@ -9,7 +9,7 @@ The script verifies the committed model SHA-256, runs `pip check`, the unit
 suite, and the source smoke test, then creates a PyInstaller **onedir/windowed**
 bundle. It smoke-tests the executable with `--self-test --report <path>` before
 creating the ZIP and `SHA256SUMS.txt`. The test initializes Tk and the bundled
-Hand Landmarker and performs blank-frame inference without opening the camera.
+Gesture Recognizer and performs blank-frame inference without opening the camera.
 No network access is needed after installing build dependencies.
 
 The model is copied into `_internal/models` by PyInstaller. MediaPipe package
@@ -47,7 +47,7 @@ and [Tk](https://github.com/tcltk/tk/blob/core-8-6-branch/license.terms).
 
 Main-branch pushes and pull requests run the Windows build and upload the ZIP,
 checksum, and smoke-test report as Actions artifacts. Pushing a version tag
-such as `v1.0.0` runs the same validation and publishes a GitHub Release with
+such as `v1.1.0` runs the same validation and publishes a GitHub Release with
 the ZIP and checksum using the workflow's scoped `GITHUB_TOKEN`.
 
 Before tagging a later release, update the package version and release notes.

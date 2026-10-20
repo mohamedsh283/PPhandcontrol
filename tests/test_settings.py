@@ -25,7 +25,7 @@ class SettingsTests(unittest.TestCase):
         self.assertFalse(self.path.exists())
 
     def test_round_trip_preserves_all_preferences(self):
-        expected = Settings(camera=2, sensitivity="High", reverse=True, profile="SumatraPDF")
+        expected = Settings(camera=2, sensitivity="High", mode="Point & swipe", profile="SumatraPDF")
         self.store.save(expected)
         self.assertEqual(self.store.load(), expected)
         self.assertEqual(json.loads(self.path.read_text(encoding="utf-8")), asdict(expected))
@@ -36,8 +36,8 @@ class SettingsTests(unittest.TestCase):
             "not json", "[]", "null", '"settings"',
             '{"camera": true}', '{"camera": -1}', '{"camera": 16}',
             '{"camera": 1.5}', '{"camera": "1"}',
-            '{"sensitivity": "Extreme"}', '{"reverse": "false"}',
-            '{"profile": "Browser"}', '{"reverse": null}',
+            '{"sensitivity": "Extreme"}', '{"mode": "Palm"}',
+            '{"profile": "Browser"}', '{"mode": null}',
         ):
             with self.subTest(text=text):
                 self.write_raw(text)
@@ -46,6 +46,10 @@ class SettingsTests(unittest.TestCase):
     def test_partial_and_unknown_fields_are_supported(self):
         self.write_raw('{"camera": 3, "future_field": "ignored", "paused": false}')
         self.assertEqual(self.store.load(), Settings(camera=3))
+
+    def test_old_swipe_settings_default_to_thumbs_without_reversing(self):
+        self.write_raw('{"camera": 2, "reverse": true, "profile": "SumatraPDF"}')
+        self.assertEqual(self.store.load(), Settings(camera=2, profile="SumatraPDF", mode="Thumbs"))
 
     def test_camera_boundaries_match_ui(self):
         for camera in (0, 15):

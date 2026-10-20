@@ -1,11 +1,11 @@
 """Control lifecycle independent of cameras, GUI and Windows APIs."""
 from time import monotonic
 
-from .gestures import SwipeDetector
+from .gestures import ThumbDetector, PointSwipeDetector
 
 
 class ControlSession:
-    def __init__(self, detector: SwipeDetector):
+    def __init__(self, detector: ThumbDetector | PointSwipeDetector):
         self.detector = detector
         self.paused = True
         self.ready = False

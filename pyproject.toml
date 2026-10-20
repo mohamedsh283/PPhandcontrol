@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "PPhandcontrol"
-version = "1.0.0"
-description = "Local webcam swipe controls for Windows presentations and PDF viewers"
+version = "1.1.0"
+description = "Offline thumbs and pointing gestures for Windows presentations and PDFs"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 license = {file = "LICENSE"}

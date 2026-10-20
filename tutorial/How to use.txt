@@ -1,59 +1,60 @@
-PPhandcontrol - How to use
-Created by Mohamed Sherif
-Windows 10/11, 64-bit | Version 1.0.0
+PPhandcontrol 1.1.0 - How to use
+Created by Mohamed Sherif | Windows 10/11 x64
 
 START
-1. Keep the whole PPhandcontrol folder together, including _internal.
-2. Double-click PPhandcontrol.exe. You do not need to install Python.
-3. Allow camera access if Windows asks. The app starts PAUSED.
-4. Choose the presentation viewer profile and your camera (usually camera 0).
-5. Open your presentation or PDF and start slideshow/presentation mode.
-6. Press Ctrl+Alt+P to resume gestures, then click the slide or PDF page.
+1. Close the old version if it is running. Extract the new ZIP to a fresh folder.
+2. Keep the entire folder, including _internal. Open PPhandcontrol.exe.
+3. The app starts PAUSED. Choose your viewer profile and camera (usually 0).
+4. Leave Gesture mode on THUMBS, the default, or select POINT & SWIPE.
+5. Open your slideshow or PDF and click its page. Press Ctrl+Alt+P to resume.
 
-GESTURES
-Show ONE OPEN PALM, with all four fingers straight. Hold it still briefly
-until tracking is ready, then move horizontally in the mirrored preview:
+MODE 1: THUMBS (DEFAULT)
+THUMBS UP = NEXT slide, animation step, or PDF page.
+THUMBS DOWN = PREVIOUS slide, animation step, or PDF page.
+Keep the other fingers folded, show one hand clearly, and hold the pose briefly
+(about 0.35 seconds on Medium sensitivity). No horizontal swipe is needed.
+A held thumb sends one command. Relax/lower it for about 0.25 seconds before
+repeating. A stable opposite thumb can change direction after the cooldown.
 
-  SWIPE LEFT  = NEXT slide, animation step, or PDF page
-  SWIPE RIGHT = PREVIOUS slide, animation step, or PDF page
+MODE 2: POINT & SWIPE (OPTIONAL)
+Extend your INDEX FINGER toward the camera, with the other fingers folded.
+Swipe your pointing HAND LEFT in the mirrored preview = NEXT.
+Swipe your pointing HAND RIGHT = PREVIOUS.
+Keep the whole hand visible; use a slight angle if the fingertip hides it.
+Relax/retract the finger after each command and while returning your hand.
+An open palm does not trigger this mode. There is no old open-palm hold step.
 
-Each swipe sends one command. Wait for the 0.8-second cooldown and hold your
-palm still before swiping again. Close your palm while repositioning it.
-Use Reverse directions to swap the mapping. High sensitivity accepts smaller
-swipes; Low sensitivity requires larger swipes. Settings changes pause gestures.
+CONTROLS
+P = pause/resume in the app. Q = quit in the app.
+Ctrl+Alt+P = pause/resume globally. Ctrl+Alt+Q = quit globally.
+The app works while minimized. Click your viewer before gesturing; navigation
+is suppressed when PPhandcontrol itself is focused.
+Changing mode/settings pauses gestures. Resume when ready.
+High sensitivity = shorter thumb hold / smaller pointing swipe.
+Low sensitivity = longer thumb hold / larger pointing swipe.
+There is a 0.8-second cooldown between commands.
 
-KEYBOARD CONTROLS
-P = pause/resume while the app has focus
-Q = quit while the app has focus
-Ctrl+Alt+P = pause/resume globally, including while the app is minimized
-Ctrl+Alt+Q = quit globally and release the camera
-The app also has Pause/Resume and Quit buttons.
-
-VIEWER PROFILES
-PowerPoint / Google Slides: normal next/previous steps, including animations.
+VIEWERS
+PowerPoint / Google Slides: normal next/previous animation or slide step.
 Adobe Acrobat / Reader: next/previous PDF page.
-SumatraPDF: next/previous page; use single-page or presentation mode.
-Click the actual slide or PDF area. Commands go to the focused window.
-Browser PDF viewers are outside guaranteed first-release compatibility.
+SumatraPDF: next/previous PDF page; single-page/presentation mode recommended.
+Commands go to the focused window. Browser PDF viewers are not guaranteed.
 
-IF IT DOES NOT WORK
-No camera: close camera/video-call apps, check Windows camera permissions,
-or select another camera index and click Apply camera / Retry camera.
-No navigation: resume gestures, select the matching viewer profile, and
-click your slide/PDF. Navigation is suppressed while PPhandcontrol has focus.
-Poor tracking: use even lighting and keep the whole hand visible.
-If a global shortcut is unavailable, use P/Q in the app or its buttons.
-The EXE is unsigned. If device policy blocks it, contact the device
-administrator or follow the repository's instructions for running from source.
+TROUBLESHOOTING
+No camera: close video-call/camera apps, check camera permissions, select a
+different camera index, or click Retry camera.
+Missed gesture: use even lighting, keep one whole hand visible, check the mode
+and recognition status, and try High sensitivity. Relax between repeated poses.
+No navigation: resume gestures, choose the right profile, and click the page.
+Quit the OLD app before opening the new app so it releases camera and shortcuts.
+If a shortcut conflicts, use the app's P/Q keys or buttons.
+The EXE is unsigned. If device policy blocks it, contact the administrator or
+use the repository's source instructions. Do not remove _internal.
 
 PRIVACY AND LICENSE
 Camera images stay on your computer and are not recorded or uploaded.
-Read License.txt: free use and free redistribution are allowed. Do not sell
-original or modified copies or claim the original work as your own.
-Retain the license, credits, and third-party notices when sharing the folder.
-
-MORE HELP
-Open tutorial/index.html for the illustrated offline guide.
-Real-hand accuracy and full viewer rehearsal remain unverified; practice
-before presenting. See tutorial/RELEASE_VALIDATION.md for completed checks.
-Repository: https://github.com/mohamedsh283/PPhandcontrol
+Read License.txt. Free use and free redistribution are allowed. Do not sell
+the app or claim the original work as your own. Preserve all notices.
+Open tutorial/index.html for the illustrated guide.
+Live gesture accuracy depends on the camera and lighting; rehearse first.
+https://github.com/mohamedsh283/PPhandcontrol

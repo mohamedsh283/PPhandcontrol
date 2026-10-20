@@ -3,103 +3,98 @@
 Control your PowerPoint presentations and PDFs with hand gestures, using only your webcam.
 
 > [!IMPORTANT]
-> **Setup takes about 2 minutes after downloading. Follow the numbered Windows steps below in order, and keep the entire app folder together.**
-> This app is free and unsigned, so Windows may show a security warning on first launch. Download it only from this repository. If your device's Application Control policy blocks the EXE, contact your administrator or use the documented source setup.
+> **Setup takes about 2 minutes after downloading. Follow the Windows steps below in order and keep the entire app folder together.** This app is free and unsigned, so Windows may show a first-run warning. If device policy blocks the EXE, contact your administrator or use the source setup below.
 
-**Windows 10/11 x64 · Created by Mohamed Sherif.**
+**Windows 10/11 x64 · Version 1.1.0 · Created by Mohamed Sherif.**
 
-![Swipe left for next, swipe right for previous](tutorial/gestures.svg)
-
-Open one palm, hold it still briefly, then swipe horizontally in the mirrored
-camera preview. **Left advances; right goes back.** Each swipe sends one normal
-navigation command to the focused presentation or PDF viewer. PowerPoint
-animations advance a step at a time, just as they do with the arrow keys.
+![Thumbs up: Next; thumbs down: Previous. Optional pointing swipes: left Next, right Previous.](tutorial/gestures.svg)
 
 ## Download and run
 
 ### [⬇ Download PPhandcontrol for Windows](https://github.com/mohamedsh283/PPhandcontrol/releases/latest/download/PPhandcontrol-windows-x64.zip)
 
 **One click downloads the complete app folder as a ZIP:** **PPhandcontrol.exe**,
-**License.txt**, **How to use.txt**, and all required runtime files.
+**License.txt**, **How to use.txt**, and all runtime files. Download the new ZIP
+when upgrading; close the old app and extract into a fresh folder.
 
-1. Click **Download PPhandcontrol for Windows** above. The download starts directly.
-2. Right-click the downloaded ZIP, choose **Extract All**, and open the
-   **PPhandcontrol** folder. Keep the whole folder together, including `_internal`.
-3. Open `PPhandcontrol.exe`. No Python installation or administrator access is required.
-4. Choose your camera and navigation profile. The app always starts **paused**.
-5. Open your presentation or PDF, start its presentation/fullscreen mode, and
-   click the actual slide/document area. Press **Ctrl+Alt+P** to resume tracking.
-6. Hold one open palm still, then swipe. Hold still again between swipes.
+1. Click **Download PPhandcontrol for Windows** above.
+2. Right-click the ZIP → **Extract All** → open **PPhandcontrol**.
+3. Run **PPhandcontrol.exe**. No Python installation is needed. Keep `_internal` beside the EXE.
+4. Leave **Gesture mode** on **Thumbs** (default) and choose your presentation viewer.
+5. Open your slideshow or PDF, click the slide/page, and press **Ctrl+Alt+P** to resume. The app always starts paused.
+6. Show **thumbs up for Next**, or **thumbs down for Previous**. Relax your thumb briefly before repeating.
 
-Read [How to use.txt](Download/PPhandcontrol/How%20to%20use.txt) and
-[License.txt](Download/PPhandcontrol/License.txt) inside the app folder.
-The [extracted app folder](Download/PPhandcontrol) is also available to browse
-in the repository.
+The [extracted app folder](Download/PPhandcontrol) is also in this repository.
+Read its **How to use.txt**, or open [the illustrated offline guide](tutorial/index.html).
 
-Open [`tutorial/index.html`](tutorial/index.html) in a browser for the illustrated,
-offline quick guide. The [complete tutorial](tutorial/README.md) includes viewer
-setup and troubleshooting. This is a Windows EXE application, not an Android APK.
-The executable is unsigned; a first-run Windows reputation prompt can appear.
-Download it from this repository's Releases page and check its checksum.
+## Two gesture modes
+
+| Mode | Next | Previous | Repeat |
+| --- | --- | --- | --- |
+| **Thumbs — default** | Hold 👍 thumbs up briefly | Hold 👎 thumbs down briefly | Lower/relax the thumb for about 0.25 seconds, then show it again |
+| **Point & swipe — optional** | Extend your index finger toward the camera and swipe **left** in the mirrored preview | Point and swipe **right** | Relax/retract your index finger before the next swipe |
+
+**Thumbs** uses a trained offline gesture classifier. You do not need to move
+your hand across the screen or hold it in one exact position. At Medium
+sensitivity the pose is confirmed for about **0.35 seconds**. A held thumb
+sends **one command**, even if you keep it up. You may switch directly to a
+stable opposite thumb after the cooldown.
+
+For **Point & swipe**, fold the other fingers and move the pointing hand
+horizontally. Keep the whole hand visible; a slight angle helps if pointing
+directly into the lens hides your finger. An open palm does not activate this mode.
+Left/right follow the mirrored preview. Close or relax your finger while returning
+your hand to its starting position to prevent a return motion from navigating.
+
+Select the mode in the app; changing mode or settings pauses gestures and clears
+incomplete input. The app remembers your choice. Existing v1.0 settings upgrade
+to Thumbs by default; the old reversed-swipe setting is ignored.
 
 ## Controls and settings
 
 | Control | Action |
 | --- | --- |
-| Open-palm swipe left in the preview | Next slide, animation step, or page |
-| Open-palm swipe right in the preview | Previous slide, animation step, or page |
-| **P** while PPhandcontrol has focus | Pause/resume |
-| **Q** while PPhandcontrol has focus | Quit |
+| **P** in PPhandcontrol | Pause/resume |
+| **Q** in PPhandcontrol | Quit and release the camera |
 | **Ctrl+Alt+P** anywhere | Pause/resume without taking focus |
-| **Ctrl+Alt+Q** anywhere | Quit and release the camera |
-| Pause/Resume and Quit buttons | Same actions from the app window |
+| **Ctrl+Alt+Q** anywhere | Quit |
+| **Gesture mode** | Thumbs or Point & swipe |
+| **Sensitivity** | High: shorter hold/smaller swipe; Low: longer hold/larger swipe |
 
-- Select **Low**, **Medium** (default), or **High** sensitivity. Low requires a
-  larger swipe; High accepts a smaller swipe.
-- Enable **Reverse directions** if you prefer the opposite mapping.
-- Changing settings pauses gestures; resume after focusing the viewer again.
-- A **0.8-second cooldown** and a stable-hand rearm prevent repeated commands.
-  Return to the starting position with your palm closed or out of view, then
-  open it and hold still before the next gesture.
-- The preview shows landmarks, tracking status, direction hints, and the last
-  navigation action. The app continues processing when minimized.
-- Navigation is suppressed while the app itself has focus. Focus your viewer
-  before testing. P/Q are ordinary keys in other applications; only the global
-  Ctrl+Alt shortcuts are registered.
+There is a **0.8-second cooldown**, plus one command per held gesture. The app
+continues working when minimized. Navigation is suppressed while PPhandcontrol
+has focus: click your viewer to test. If a global shortcut cannot register,
+the app explains the conflict and you can use its buttons or focused P/Q.
 
-Camera, sensitivity, reversed directions, and profile are stored in
-`%LOCALAPPDATA%\PPhandcontrol\settings.json`. Pause state is never restored.
+Camera, mode, sensitivity, and viewer profile are saved at
+`%LOCALAPPDATA%\PPhandcontrol\settings.json`. Activation is never restored.
 
 ## Viewer profiles
 
-| Profile | Next / previous command | Setup |
+| Profile | Next / previous | Setup |
 | --- | --- | --- |
-| PowerPoint / Google Slides | Right / Left arrow | Start slideshow; focus the slide, outside menus and text fields |
-| Adobe Acrobat / Reader | Ctrl+PageDown / Ctrl+PageUp | Open PDF; focus document area; fullscreen is helpful |
-| SumatraPDF | PageDown / PageUp | Use single-page or presentation mode and focus the document |
+| PowerPoint / Google Slides | Right / Left arrow | Start slideshow and focus the slide |
+| Adobe Acrobat / Reader | Ctrl+PageDown / Ctrl+PageUp | Focus the PDF document area |
+| SumatraPDF | PageDown / PageUp | Use single-page or presentation mode |
 
-The focused application receives the keys. PPhandcontrol does not locate or
-activate a viewer. Use the matching profile and keep the viewer in front.
-Browser PDF viewers and editor text fields are outside first-release compatibility.
-Avoid running the viewer as administrator: Windows may prevent a normal app
-from sending keys to an elevated application.
+PowerPoint advances normal animation steps before the next slide. Keys go to
+the focused application. Browser PDF viewers are outside guaranteed compatibility.
+Avoid running the viewer as administrator; Windows can block incoming keys.
 
-## Privacy and recognition
+## Privacy and troubleshooting
 
-Camera frames are processed on your computer and are not saved or uploaded.
-The bundled model allows the app to work offline; there are no runtime model
-downloads, accounts, or app telemetry. The camera is released when you quit.
+The camera is processed locally. No images are recorded or uploaded; the model
+is bundled and there are no runtime downloads or app telemetry. Quit releases
+the camera. If tracking is uncertain, use even lighting, one hand, and keep the
+whole hand in view. Check the recognized-gesture status in the preview.
 
-Recognition requires one sufficiently confident, open hand and mainly horizontal
-motion. Tracking loss, multiple hands, low confidence, vertical motion, and
-stationary hands do not produce navigation. Pause/resume, settings changes,
-and tracking loss clear the previous movement history. Bright, even lighting
-and a clear view of the whole hand improve recognition.
+If the camera fails, close video-call/camera apps, check Windows camera
+permissions, choose another camera index, or click Retry camera. Navigation
+pauses on camera errors. See the [text guide](tutorial/How%20to%20use.txt).
 
-## Run from source
+## Run from source and build
 
-Use **64-bit CPython 3.12** with Tcl/Tk installed (the normal python.org Windows
-installer includes it). From a checkout in PowerShell:
+Use 64-bit CPython 3.12 with Tcl/Tk on Windows:
 
 ```powershell
 py -3.12 -m venv .venv
@@ -109,46 +104,27 @@ py -3.12 -m venv .venv
 .venv\Scripts\python.exe -m pphandcontrol
 ```
 
-Keep `models/hand_landmarker.task` with the source. Its checksum is committed
-beside it; neither source launch nor packaged launch downloads a model.
-Only `opencv-contrib-python` is installed because MediaPipe requires it; do not
-install another OpenCV wheel into the same environment.
+Keep `models/gesture_recognizer.task` and its checksum with the source.
+Build with `.venv\Scripts\python.exe scripts/build.py`. This runs checks,
+packages the offline EXE, smoke-tests it, and writes the ZIP and checksum to
+`dist/`. See [packaging](packaging/README.md) for exporting the GitHub folder.
+Windows CI builds each main-branch push; version tags publish the verified ZIP.
 
-Build the portable executable on Windows:
+## Verification
 
-```powershell
-.venv\Scripts\python.exe scripts/build.py
-```
-
-The build runs the unit suite, checks the model checksum, freezes the app with
-PyInstaller, smoke-tests the frozen app, and writes
-`dist/PPhandcontrol-windows-x64.zip` plus `dist/SHA256SUMS.txt`. It includes
-the tutorial, credits, custom license, model notice, dependency licenses, and
-a smoke-test report. The dependency versions are pinned; archive entry order
-and timestamps are normalized. Windows/Python/compiler differences can still
-change binary bytes, so this is a repeatable build recipe, not a promise of
-bit-for-bit identical EXEs across machines. See [packaging details](packaging/README.md).
-
-## Verification and limitations
-
-Automated tests cover synthetic swipe sequences and Windows command selection.
-The offline smoke test checks Tk, imports, the bundled model, and blank-frame
-inference. These checks do not establish real-camera gesture accuracy or
-compatibility with every viewer. Use the [manual validation checklist](tutorial/VALIDATION.md)
-to record PowerPoint animations, PDF navigation, minimized operation, hotkeys,
-camera failures, and the target of at least 18/20 successful swipes each way
-with no duplicate commands. Release notes state which checks were completed.
-
-Windows CI runs tests and packages each main-branch push and pull request.
-Version tags create GitHub Releases containing the ZIP and checksum.
+Automated tests cover both gesture modes, mode migration, held-pose duplicate
+prevention, brief detection loss, sensitivity, camera errors, and Windows keys.
+The actual trained model was also checked on Google's thumbs-up sample, its
+mirror, and its rotated thumbs-down variant. These checks do not establish
+live-camera accuracy on your hardware. See [release validation](tutorial/RELEASE_VALIDATION.md)
+and the [rehearsal checklist](tutorial/VALIDATION.md). Practice before presenting.
 
 ## License and credits
 
-Free to use, copy, modify, and redistribute free of charge under the custom
-[PPhandcontrol Free Use and Attribution License](LICENSE). **Do not sell original
-or modified copies, or claim the original work as your own.** Retain attribution,
-the license, and credits; label modifications. The sale restriction means this
-is source-available software, not OSI-approved open-source software.
+Created by **Mohamed Sherif**. Free use, modification, and free redistribution
+under the custom [license](LICENSE). **Do not sell original or modified copies
+or claim the original work as your own.** Keep the license and credits, and
+mark modifications. This is source-available software with a sale restriction.
 
 Inspired by [Mahmoud Wael's hand-control project](https://github.com/mahmoudwaelali/hand-control),
 with fresh application source. See [credits](CREDITS.md) and

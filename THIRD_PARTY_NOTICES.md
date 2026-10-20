@@ -9,7 +9,7 @@ notices. Keep that folder with redistributed executables.
 | Component | Source and terms |
 | --- | --- |
 | MediaPipe 0.10.32 | [Google MediaPipe](https://github.com/google-ai-edge/mediapipe), Apache License 2.0; bundled package LICENSE and NOTICE |
-| Hand Landmarker model, float16 version 1 | [Official model documentation](https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker/index#models); model and its source/license details are recorded in `models/README.md` |
+| Gesture Recognizer model, float16 version 1 | [Official model documentation](https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer/index#models); model and its source/license details are recorded in `models/README.md` |
 | OpenCV contrib Python 4.11.0.86 | [OpenCV Python](https://github.com/opencv/opencv-python), Apache License 2.0; its wheel includes additional third-party and multimedia notices |
 | Pillow | [Pillow](https://github.com/python-pillow/Pillow), HPND/PIL and bundled codec notices |
 | NumPy | [NumPy](https://numpy.org), BSD-style terms and bundled numerical-library notices |

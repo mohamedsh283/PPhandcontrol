@@ -19,16 +19,17 @@ def self_test() -> dict:
     import numpy as np
     from PIL import Image, ImageTk
     from pphandcontrol.windows import INPUT
+    from pphandcontrol.gestures import MODES, ThumbDetector, create_detector
     import ctypes
 
     verify_model()
-    options = mp.tasks.vision.HandLandmarkerOptions(
+    options = mp.tasks.vision.GestureRecognizerOptions(
         base_options=mp.tasks.BaseOptions(model_asset_path=str(model_path())),
         running_mode=mp.tasks.vision.RunningMode.VIDEO,
         num_hands=2,
     )
-    with mp.tasks.vision.HandLandmarker.create_from_options(options) as detector:
-        result = detector.detect_for_video(mp.Image(
+    with mp.tasks.vision.GestureRecognizer.create_from_options(options) as detector:
+        result = detector.recognize_for_video(mp.Image(
             image_format=mp.ImageFormat.SRGB, data=np.zeros((480, 640, 3), dtype=np.uint8)), 1)
         assert not result.hand_landmarks, "Blank image should not contain hands"
     root = tk.Tk()
@@ -40,7 +41,8 @@ def self_test() -> dict:
     finally:
         root.destroy()
     assert ctypes.sizeof(INPUT) == 40, "Expected Windows x64 INPUT layout"
-    return {"version": __version__, "result": "passed", "model": "loaded and inferred offline", "tk": "passed", "opencv": cv2.__version__, "camera_opened": False, "navigation_sent": False}
+    assert isinstance(create_detector(), ThumbDetector)
+    return {"version": __version__, "result": "passed", "model": "Gesture Recognizer loaded and inferred offline", "gesture_modes": list(MODES), "default_mode": "Thumbs", "tk": "passed", "opencv": cv2.__version__, "camera_opened": False, "navigation_sent": False}
 
 
 def main() -> int:

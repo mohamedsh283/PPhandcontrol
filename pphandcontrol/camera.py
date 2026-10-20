@@ -63,15 +63,16 @@ class TrackingWorker(Thread):
             capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
             capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
             capture.set(cv2.CAP_PROP_FPS, 30)
-            options = mp.tasks.vision.HandLandmarkerOptions(
+            options = mp.tasks.vision.GestureRecognizerOptions(
                 base_options=mp.tasks.BaseOptions(model_asset_path=str(self.model_path)),
                 running_mode=mp.tasks.vision.RunningMode.VIDEO,
                 num_hands=2,
-                min_hand_detection_confidence=0.6,
-                min_hand_presence_confidence=0.6,
-                min_tracking_confidence=0.6,
+                min_hand_detection_confidence=0.5,
+                min_hand_presence_confidence=0.5,
+                min_tracking_confidence=0.5,
+                canned_gestures_classifier_options=mp.tasks.components.processors.ClassifierOptions(score_threshold=0.5),
             )
-            landmarker = mp.tasks.vision.HandLandmarker.create_from_options(options)
+            landmarker = mp.tasks.vision.GestureRecognizer.create_from_options(options)
             last_ms = -1
             failures = 0
             while not self.stopping.is_set():
@@ -89,14 +90,16 @@ class TrackingWorker(Thread):
                 rgb = cv2.cvtColor(cv2.flip(frame, 1), cv2.COLOR_BGR2RGB)
                 stamp = max(last_ms + 1, int(captured_at * 1000))
                 last_ms = stamp
-                result = landmarker.detect_for_video(mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb), stamp)
+                result = landmarker.recognize_for_video(mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb), stamp)
                 # Tasks exposes handedness confidence, not per-hand tracking confidence.
                 # Detection, presence and tracking are gated by the options above.
                 hands = tuple(HandSample(
                     timestamp=captured_at,
                     points=tuple((p.x, p.y, p.z) for p in landmarks),
                     confidence=1.0,
-                ) for landmarks in result.hand_landmarks)
+                    gesture=result.gestures[i][0].category_name if i < len(result.gestures) and result.gestures[i] else None,
+                    gesture_score=result.gestures[i][0].score if i < len(result.gestures) and result.gestures[i] else 0.0,
+                ) for i, landmarks in enumerate(result.hand_landmarks))
                 publish_latest(self.events, CameraEvent(self.generation, captured_at, rgb, hands))
         except Exception as exc:
             if not self.stopping.is_set():

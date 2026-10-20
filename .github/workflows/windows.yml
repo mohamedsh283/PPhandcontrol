@@ -61,5 +61,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_NOTES: tutorial/release-notes-${{ github.ref_name }}.md
         run: |
-          gh release create "$RELEASE_TAG" release/PPhandcontrol-windows-x64.zip release/SHA256SUMS.txt --verify-tag --title "PPhandcontrol $RELEASE_TAG" --notes-file tutorial/release-notes-v1.0.0.md
+          gh release create "$RELEASE_TAG" release/PPhandcontrol-windows-x64.zip release/SHA256SUMS.txt --verify-tag --title "PPhandcontrol $RELEASE_TAG" --notes-file "$RELEASE_NOTES"

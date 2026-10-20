@@ -8,7 +8,7 @@ def resource_root() -> Path:
 
 
 def model_path() -> Path:
-    return resource_root() / "models" / "hand_landmarker.task"
+    return resource_root() / "models" / "gesture_recognizer.task"
 
 
 def verify_model() -> None:

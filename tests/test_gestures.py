@@ -1,211 +1,218 @@
-"""Behavioral checks using synthetic landmark sequences, without a webcam."""
-
+"""Gesture behavior at realistic cadences, without cameras or native input."""
 from dataclasses import replace
 import math
 import unittest
 
-from pphandcontrol.gestures import HandSample, SwipeDetector
+from pphandcontrol.gestures import HandSample, ThumbDetector, PointSwipeDetector, create_detector, pointing
 
 
-def palm(timestamp, x=0.0, y=0.0, *, confidence=1.0, rotation=0.0, mirror=False):
-    points = [(0.5, 0.7, 0.0)] * 21
-    points[1:5] = [(0.45, 0.64, 0.0), (0.40, 0.60, 0.0),
-                   (0.36, 0.57, 0.0), (0.32, 0.54, 0.0)]
-    for start, finger_x in ((5, 0.42), (9, 0.48), (13, 0.54), (17, 0.60)):
-        for offset, finger_y in enumerate((0.55, 0.45, 0.37, 0.30)):
-            points[start + offset] = (finger_x, finger_y, 0.0)
-    transformed = []
-    for px, py, pz in points:
-        if mirror:
-            px = 1 - px
-        px, py = px - 0.5, py - 0.5
-        transformed.append((
-            0.5 + px * math.cos(rotation) - py * math.sin(rotation) + x,
-            0.5 + px * math.sin(rotation) + py * math.cos(rotation) + y,
-            pz,
-        ))
-    return HandSample(timestamp, tuple(transformed), confidence)
+def sample(t, pose="Thumb_Up", score=0.95, dx=0, dy=0, toward_camera=False, mirror=False):
+    p = [(0.5, 0.75, 0.0)] * 21
+    p[1:5] = [(0.45, .67, 0), (.40, .61, 0), (.36, .54, 0), (.34, .46, 0)]
+    for m, x in ((5, .42), (9, .48), (13, .54), (17, .60)):
+        p[m:m+4] = [(x, .59, 0), (x, .49, -.01), (x, .55, -.04), (x, .66, -.04)]
+    if pose in ("Pointing_Up", "geometry"):
+        p[5:9] = [(.42, .59, 0), (.42, .47, -.01), (.42, .36, -.02), (.42, .25, -.03)]
+        if toward_camera:
+            p[5:9] = [(.42, .59, 0), (.42, .58, -.12), (.42, .57, -.23), (.42, .56, -.34)]
+    if pose == "Open_Palm":
+        for m, x in ((5,.42),(9,.48),(13,.54),(17,.60)):
+            p[m:m+4] = [(x, .59, 0),(x,.47,0),(x,.36,0),(x,.25,0)]
+    pts = tuple(((1-x if mirror else x)+dx, y+dy, z) for x,y,z in p)
+    return HandSample(t, pts, 1.0, None if pose == "geometry" else pose, score)
 
 
-def arm(detector, start=0.0, x=0.0, **kwargs):
-    for offset in (0.0, 0.1, 0.2, 0.3):
-        timestamp = start + offset
-        assert detector.update([palm(timestamp, x, **kwargs)], timestamp) is None
-    return start + 0.3
-
-
-def swipe(detector, start=0.3, direction=-1, distance=0.25, x=0.0, **kwargs):
+def hold(detector, pose="Thumb_Up", start=0.0, duration=1.0, step=.05, **kwargs):
     actions = []
-    steps = math.ceil(distance / 0.05)
-    for step in range(1, steps + 1):
-        timestamp = start + 0.05 * step
-        result = detector.update([
-            palm(timestamp, x + direction * min(step * 0.05, distance), **kwargs)
-        ], timestamp)
-        if result:
-            actions.append(result)
+    for i in range(round(duration / step) + 1):
+        t = round(start + i * step, 6)
+        action = detector.update([sample(t, pose, **kwargs)], t)
+        if action:
+            actions.append(action)
     return actions
 
 
-class SwipeDetectorTests(unittest.TestCase):
-    def test_mirrored_left_is_next_and_right_is_previous(self):
-        for direction, expected in ((-1, "next"), (1, "previous")):
-            with self.subTest(direction=direction):
-                detector = SwipeDetector()
-                arm(detector)
-                self.assertEqual(swipe(detector, direction=direction), [expected])
+def swipe(detector, direction=-1, start=0.0, distance=.22, pose="Pointing_Up", **kwargs):
+    actions = []
+    for i in range(7):
+        t = round(start + i*.05, 6)
+        action = detector.update([sample(t, pose, dx=direction*distance*i/6, **kwargs)], t)
+        if action:
+            actions.append(action)
+    return actions
 
-    def test_reverse_swaps_both_directions(self):
-        for direction, expected in ((-1, "previous"), (1, "next")):
-            with self.subTest(direction=direction):
-                detector = SwipeDetector(reverse=True)
-                arm(detector)
-                self.assertEqual(swipe(detector, direction=direction), [expected])
 
-    def test_requires_stable_hold_before_first_swipe(self):
-        detector = SwipeDetector()
-        self.assertEqual(swipe(detector, start=0.0), [])
+class ThumbTests(unittest.TestCase):
+    def test_up_next_down_previous(self):
+        self.assertEqual(hold(ThumbDetector()), ["next"])
+        self.assertEqual(hold(ThumbDetector(), "Thumb_Down"), ["previous"])
 
-    def test_sensitivity_changes_minimum_travel(self):
-        for sensitivity, distance, expected in (
-            ("High", 0.15, ["next"]),
-            ("Medium", 0.15, []),
-            ("Medium", 0.20, ["next"]),
-            ("Low", 0.25, []),
-            ("Low", 0.30, ["next"]),
-        ):
-            with self.subTest(sensitivity=sensitivity, distance=distance):
-                detector = SwipeDetector(sensitivity)
-                arm(detector)
-                self.assertEqual(swipe(detector, distance=distance), expected)
+    def test_long_hold_never_repeats(self):
+        self.assertEqual(hold(ThumbDetector(), duration=6), ["next"])
 
-    def test_continuous_movement_emits_only_one_command(self):
-        detector = SwipeDetector()
-        arm(detector)
-        self.assertEqual(swipe(detector, distance=0.60), ["next"])
+    def test_no_swipe_or_position_hold_needed(self):
+        d = ThumbDetector()
+        actions = []
+        for i in range(15):
+            t = i*.05
+            action = d.update([sample(t, dx=.06*math.sin(i))], t)
+            if action: actions.append(action)
+        self.assertEqual(actions, ["next"])
 
-    def test_rearms_after_cooldown_and_stationary_hold(self):
-        detector = SwipeDetector()
-        arm(detector)
-        self.assertEqual(swipe(detector), ["next"])
-        for index in range(6, 24):
-            timestamp = 0.3 + index * 0.05
-            self.assertIsNone(detector.update([palm(timestamp, -0.25)], timestamp))
-        self.assertEqual(swipe(detector, start=1.45, x=-0.25, direction=1), ["previous"])
+    def test_confident_neutral_rearms_same_pose(self):
+        d = ThumbDetector()
+        self.assertEqual(hold(d), ["next"])
+        self.assertEqual(hold(d, "Closed_Fist", start=1.05, duration=.3), [])
+        self.assertEqual(hold(d, start=1.4), ["next"])
 
-    def test_cooldown_survives_temporary_tracking_loss(self):
-        detector = SwipeDetector()
-        arm(detector)
-        self.assertEqual(swipe(detector), ["next"])
-        self.assertIsNone(detector.update([], 0.56))
-        arm(detector, start=0.6, x=-0.25)
-        self.assertEqual(swipe(detector, start=0.9, x=-0.25, direction=1), [])
+    def test_hand_lowered_rearms(self):
+        d = ThumbDetector()
+        hold(d)
+        for i in range(7): d.update([], 1.05+i*.05)
+        self.assertEqual(hold(d, start=1.4), ["next"])
 
-    def test_reset_clears_movement_on_pause_or_settings_change(self):
-        detector = SwipeDetector()
-        arm(detector)
-        self.assertEqual(swipe(detector, distance=0.1), [])
-        detector.reset()
-        self.assertEqual(swipe(detector, start=0.4, x=-0.1, distance=0.3), [])
+    def test_brief_hand_loss_does_not_repeat(self):
+        d = ThumbDetector()
+        hold(d)
+        d.update([], 1.05)
+        d.update([], 1.1)
+        self.assertEqual(hold(d, start=1.15), [])
 
-    def test_stationary_jitter_does_not_navigate(self):
-        detector = SwipeDetector()
-        for index in range(100):
-            timestamp = index * 0.04
-            self.assertIsNone(detector.update([
-                palm(timestamp, x=math.sin(index) * 0.006, y=math.cos(index) * 0.006)
-            ], timestamp))
+    def test_uncertain_pose_does_not_unlock_held_thumb(self):
+        d = ThumbDetector()
+        hold(d)
+        hold(d, "None", start=1.05, duration=.6)
+        self.assertEqual(hold(d, start=1.7), [])
 
-    def test_vertical_and_diagonal_motion_do_not_navigate(self):
-        for ratio in (1.0, 3.0):
-            with self.subTest(vertical_ratio=ratio):
-                detector = SwipeDetector()
-                arm(detector)
-                for index in range(1, 9):
-                    timestamp = 0.3 + index * 0.05
-                    self.assertIsNone(detector.update([
-                        palm(timestamp, x=-index * 0.03, y=index * 0.03 * ratio)
-                    ], timestamp))
+    def test_opposite_pose_can_fire_after_cooldown(self):
+        d = ThumbDetector()
+        self.assertEqual(hold(d, duration=.4), ["next"])
+        self.assertEqual(hold(d, "Thumb_Down", start=.45, duration=1), ["previous"])
 
-    def test_slow_drift_beyond_motion_window_does_not_navigate(self):
-        detector = SwipeDetector()
-        arm(detector)
-        for index in range(1, 31):
-            timestamp = 0.3 + index * 0.1
-            self.assertIsNone(detector.update([palm(timestamp, -index * 0.01)], timestamp))
+    def test_low_score_never_emits(self):
+        self.assertEqual(hold(ThumbDetector(), score=.59), [])
 
-    def test_closed_finger_disarms(self):
-        detector = SwipeDetector()
-        arm(detector)
-        sample = palm(0.35)
-        points = list(sample.points)
-        points[11] = (0.48, 0.50, 0.0)
-        points[12] = (0.48, 0.54, 0.0)
-        self.assertIsNone(detector.update([replace(sample, points=tuple(points))], 0.35))
-        self.assertEqual(swipe(detector, start=0.35), [])
+    def test_short_candidate_flicker_is_tolerated(self):
+        d = ThumbDetector()
+        for t in (0,.05,.1,.15,.2,.25): self.assertIsNone(d.update([sample(t)], t))
+        self.assertIsNone(d.update([sample(.30, "None", .2)], .30))
+        self.assertEqual(d.update([sample(.35)], .35), "next")
 
-    def test_open_palm_rotation_preserves_recognition(self):
-        detector = SwipeDetector()
-        arm(detector, rotation=math.pi / 2)
-        self.assertEqual(swipe(detector, rotation=math.pi / 2), ["next"])
+    def test_hold_time_depends_on_sensitivity(self):
+        for setting, expected in (("High", ["next"]), ("Medium", []), ("Low", [])):
+            self.assertEqual(hold(ThumbDetector(setting), duration=.25), expected)
 
-    def test_low_confidence_disarms(self):
-        detector = SwipeDetector()
-        arm(detector)
-        self.assertIsNone(detector.update([palm(0.35, confidence=0.59)], 0.35))
-        self.assertEqual(swipe(detector, start=0.35), [])
+    def test_one_frame_cannot_fire(self):
+        d = ThumbDetector()
+        self.assertIsNone(d.update([sample(0)], 0))
+        self.assertIsNone(d.update([sample(1)], 1))
 
-    def test_zero_and_multiple_hands_disarm(self):
-        for hands in ([], [palm(0.35), palm(0.35, x=0.2)]):
-            with self.subTest(hands=len(hands)):
-                detector = SwipeDetector()
-                arm(detector)
-                self.assertIsNone(detector.update(hands, 0.35))
-                self.assertEqual(swipe(detector, start=0.35), [])
+    def test_lower_frame_rate_still_recognizes_a_held_thumb(self):
+        d = ThumbDetector()
+        self.assertIsNone(d.update([sample(0)], 0))
+        self.assertEqual(d.update([sample(.4)], .4), "next")
 
-    def test_frame_gap_discards_previous_movement(self):
-        detector = SwipeDetector()
-        arm(detector)
-        self.assertEqual(swipe(detector, distance=0.1), [])
-        self.assertIsNone(detector.update([palm(0.8, -0.2)], 0.8))
-        self.assertEqual(swipe(detector, start=0.8, x=-0.2), [])
+    def test_pointing_is_neutral_in_thumbs_mode(self):
+        self.assertEqual(hold(ThumbDetector(), "Pointing_Up", duration=2), [])
 
-    def test_position_jump_cannot_complete_swipe(self):
-        detector = SwipeDetector()
-        arm(detector)
-        self.assertIsNone(detector.update([palm(0.35, -0.4)], 0.35))
-        self.assertEqual(swipe(detector, start=0.35, x=-0.4), [])
+    def test_frame_gap_and_nonmonotonic_time_restart_hold(self):
+        for next_time in (.2, 1.0):
+            d = ThumbDetector()
+            hold(d, duration=.25)
+            self.assertIsNone(d.update([sample(next_time)], next_time))
 
-    def test_replacement_hand_requires_new_hold(self):
-        detector = SwipeDetector()
-        arm(detector)
-        self.assertIsNone(detector.update([palm(0.35, mirror=True)], 0.35))
-        self.assertEqual(swipe(detector, start=0.35, mirror=True), [])
+    def test_multiple_hands_and_invalid_input_never_emit(self):
+        d = ThumbDetector()
+        for i in range(20):
+            t=i*.05
+            self.assertIsNone(d.update([sample(t), sample(t)], t))
+        for bad in (replace(sample(2), confidence=.3), replace(sample(2), gesture_score=math.nan),
+                    replace(sample(2), points=((math.nan,0,0),)*21)):
+            self.assertIsNone(d.update([bad], 2))
+        self.assertIsNone(d.update([], math.nan))
 
-    def test_nonmonotonic_time_discards_history(self):
-        detector = SwipeDetector()
-        arm(detector)
-        self.assertIsNone(detector.update([palm(0.25, -0.05)], 0.25))
-        self.assertEqual(swipe(detector, start=0.25, x=-0.05), [])
+    def test_pause_reset_requires_a_fresh_hold(self):
+        d=ThumbDetector()
+        hold(d, duration=.25)
+        d.reset()
+        self.assertIsNone(d.update([sample(.3)], .3))
+        self.assertIsNone(d.update([sample(.4)], .4))
 
-    def test_malformed_samples_are_ignored(self):
-        invalid = [
-            HandSample(0.0, ()),
-            replace(palm(0.0), points=((math.nan, 0.0, 0.0),) * 21),
-            replace(palm(0.0), confidence=math.nan),
-            palm(-1.0),
-        ]
-        for sample in invalid:
-            with self.subTest(sample=sample):
-                detector = SwipeDetector()
-                self.assertIsNone(detector.update([sample], 0.0))
-        self.assertIsNone(SwipeDetector().update([], math.nan))
 
-    def test_invalid_configuration_is_rejected(self):
-        for kwargs in ({"sensitivity": "Ultra"}, {"reverse": "yes"},
-                       {"cooldown": -1.0}, {"cooldown": math.inf}):
-            with self.subTest(kwargs=kwargs):
-                self.assertRaises(ValueError, SwipeDetector, **kwargs)
+class PointSwipeTests(unittest.TestCase):
+    def test_left_next_right_previous(self):
+        for direction, expected in ((-1,"next"),(1,"previous")):
+            self.assertEqual(swipe(PointSwipeDetector(), direction), [expected])
+
+    def test_geometry_supports_index_pointing_into_camera_and_both_hands(self):
+        for mirror in (False,True):
+            self.assertTrue(pointing(sample(0,"geometry", toward_camera=True, mirror=mirror)))
+            self.assertEqual(swipe(PointSwipeDetector(), pose="geometry", toward_camera=True, mirror=mirror), ["next"])
+
+    def test_open_palm_and_thumbs_do_not_swipe(self):
+        for pose in ("Open_Palm","Thumb_Up","Thumb_Down","Closed_Fist"):
+            self.assertEqual(swipe(PointSwipeDetector(), pose=pose), [])
+
+    def test_uncategorized_open_hand_cannot_pass_pointing_geometry(self):
+        hand = replace(sample(0,"Open_Palm"), gesture=None, gesture_score=0)
+        self.assertFalse(pointing(hand))
+
+    def test_confident_other_pose_cannot_pass_index_geometry(self):
+        for pose in ("Victory", "ILoveYou", "Open_Palm"):
+            hand = replace(sample(0,"Pointing_Up"), gesture=pose)
+            self.assertFalse(pointing(hand))
+
+    def test_stationary_point_does_not_fire(self):
+        self.assertEqual(hold(PointSwipeDetector(), "Pointing_Up", duration=3), [])
+
+    def test_vertical_and_diagonal_motion_rejected(self):
+        for dx in (0,-.03):
+            d=PointSwipeDetector()
+            for i in range(8):
+                t=i*.05
+                self.assertIsNone(d.update([sample(t,"Pointing_Up",dx=dx*i,dy=.04*i)], t))
+
+    def test_held_point_and_return_path_cannot_duplicate(self):
+        d=PointSwipeDetector()
+        self.assertEqual(swipe(d), ["next"])
+        self.assertEqual(swipe(d, direction=1, start=.4), [])
+        self.assertEqual(hold(d,"Pointing_Up", start=.8, duration=2), [])
+
+    def test_relax_then_new_swipe_rearms(self):
+        d=PointSwipeDetector()
+        swipe(d)
+        hold(d,"Closed_Fist", start=.35,duration=.3)
+        self.assertEqual(swipe(d, direction=1,start=1.2), ["previous"])
+
+    def test_sensitivity_changes_travel(self):
+        self.assertEqual(swipe(PointSwipeDetector("High"),distance=.12),["next"])
+        self.assertEqual(swipe(PointSwipeDetector("Medium"),distance=.12),[])
+        self.assertEqual(swipe(PointSwipeDetector("Low"),distance=.17),[])
+
+    def test_jump_and_tracking_gap_do_not_complete_stale_swipe(self):
+        d=PointSwipeDetector()
+        for t,x in ((0,0),(.1,-.06),(.2,-.5),(1,-.6)):
+            self.assertIsNone(d.update([sample(t,"Pointing_Up",dx=x)],t))
+
+    def test_invalid_and_ambiguous_samples_rejected(self):
+        d=PointSwipeDetector()
+        for i in range(8):
+            t=i*.05
+            self.assertIsNone(d.update([sample(t,"Pointing_Up"),sample(t,"Pointing_Up")],t))
+        self.assertIsNone(d.update([replace(sample(2), points=())],2))
+        self.assertIsNone(d.update([],math.nan))
+
+
+class ModeTests(unittest.TestCase):
+    def test_default_and_explicit_mode_selection(self):
+        self.assertIsInstance(create_detector(), ThumbDetector)
+        self.assertIsInstance(create_detector("Point & swipe"), PointSwipeDetector)
+        with self.assertRaises(ValueError): create_detector("Palm")
+
+    def test_invalid_options_rejected(self):
+        for cls in (ThumbDetector,PointSwipeDetector):
+            for options in ({"sensitivity":"Ultra"},{"cooldown":-1},{"cooldown":math.nan}):
+                with self.assertRaises(ValueError): cls(**options)
 
 
 if __name__ == "__main__":
