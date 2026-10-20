@@ -1,0 +1,59 @@
+PPhandcontrol - How to use
+Created by Mohamed Sherif
+Windows 10/11, 64-bit | Version 1.0.0
+
+START
+1. Keep the whole PPhandcontrol folder together, including _internal.
+2. Double-click PPhandcontrol.exe. You do not need to install Python.
+3. Allow camera access if Windows asks. The app starts PAUSED.
+4. Choose the presentation viewer profile and your camera (usually camera 0).
+5. Open your presentation or PDF and start slideshow/presentation mode.
+6. Press Ctrl+Alt+P to resume gestures, then click the slide or PDF page.
+
+GESTURES
+Show ONE OPEN PALM, with all four fingers straight. Hold it still briefly
+until tracking is ready, then move horizontally in the mirrored preview:
+
+  SWIPE LEFT  = NEXT slide, animation step, or PDF page
+  SWIPE RIGHT = PREVIOUS slide, animation step, or PDF page
+
+Each swipe sends one command. Wait for the 0.8-second cooldown and hold your
+palm still before swiping again. Close your palm while repositioning it.
+Use Reverse directions to swap the mapping. High sensitivity accepts smaller
+swipes; Low sensitivity requires larger swipes. Settings changes pause gestures.
+
+KEYBOARD CONTROLS
+P = pause/resume while the app has focus
+Q = quit while the app has focus
+Ctrl+Alt+P = pause/resume globally, including while the app is minimized
+Ctrl+Alt+Q = quit globally and release the camera
+The app also has Pause/Resume and Quit buttons.
+
+VIEWER PROFILES
+PowerPoint / Google Slides: normal next/previous steps, including animations.
+Adobe Acrobat / Reader: next/previous PDF page.
+SumatraPDF: next/previous page; use single-page or presentation mode.
+Click the actual slide or PDF area. Commands go to the focused window.
+Browser PDF viewers are outside guaranteed first-release compatibility.
+
+IF IT DOES NOT WORK
+No camera: close camera/video-call apps, check Windows camera permissions,
+or select another camera index and click Apply camera / Retry camera.
+No navigation: resume gestures, select the matching viewer profile, and
+click your slide/PDF. Navigation is suppressed while PPhandcontrol has focus.
+Poor tracking: use even lighting and keep the whole hand visible.
+If a global shortcut is unavailable, use P/Q in the app or its buttons.
+The EXE is unsigned. If device policy blocks it, contact the device
+administrator or follow the repository's instructions for running from source.
+
+PRIVACY AND LICENSE
+Camera images stay on your computer and are not recorded or uploaded.
+Read License.txt: free use and free redistribution are allowed. Do not sell
+original or modified copies or claim the original work as your own.
+Retain the license, credits, and third-party notices when sharing the folder.
+
+MORE HELP
+Open tutorial/index.html for the illustrated offline guide.
+Real-hand accuracy and full viewer rehearsal remain unverified; practice
+before presenting. See tutorial/RELEASE_VALIDATION.md for completed checks.
+Repository: https://github.com/mohamedsh283/PPhandcontrol

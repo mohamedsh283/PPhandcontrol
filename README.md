@@ -1,7 +1,12 @@
 # PPhandcontrol
 
-**Hands-free presentation and PDF navigation for Windows 10/11 x64.**
-Created for and credited to **Mohamed Sherif**.
+Control your PowerPoint presentations and PDFs with hand gestures, using only your webcam.
+
+> [!IMPORTANT]
+> **Setup takes about 2 minutes after downloading. Follow the numbered Windows steps below in order, and keep the entire app folder together.**
+> This app is free and unsigned, so Windows may show a security warning on first launch. Download it only from this repository. If your device's Application Control policy blocks the EXE, contact your administrator or use the documented source setup.
+
+**Windows 10/11 x64 · Created by Mohamed Sherif.**
 
 ![Swipe left for next, swipe right for previous](tutorial/gestures.svg)
 
@@ -12,14 +17,25 @@ animations advance a step at a time, just as they do with the arrow keys.
 
 ## Download and run
 
-1. Download `PPhandcontrol-windows-x64.zip` from the
-   [latest GitHub Release](https://github.com/mohamedsh283/PPhandcontrol/releases/latest).
-2. Right-click the ZIP, choose **Extract All**, and keep the whole extracted folder.
+**[Open the ready-to-run PPhandcontrol folder](Download/PPhandcontrol)** — it
+contains **PPhandcontrol.exe**, **License.txt**, **How to use.txt**, and all required
+runtime files. This folder is already extracted in the repository.
+
+1. [Download the repository ZIP](https://github.com/mohamedsh283/PPhandcontrol/archive/refs/heads/main.zip)
+   (or choose **Code → Download ZIP** on GitHub).
+2. Extract it, then open **PPhandcontrol-main → Download → PPhandcontrol**.
+   Keep the whole PPhandcontrol folder together, including `_internal`.
 3. Open `PPhandcontrol.exe`. No Python installation or administrator access is required.
 4. Choose your camera and navigation profile. The app always starts **paused**.
 5. Open your presentation or PDF, start its presentation/fullscreen mode, and
    click the actual slide/document area. Press **Ctrl+Alt+P** to resume tracking.
 6. Hold one open palm still, then swipe. Hold still again between swipes.
+
+Read [How to use.txt](Download/PPhandcontrol/How%20to%20use.txt) and
+[License.txt](Download/PPhandcontrol/License.txt) inside the app folder.
+For a smaller download containing just the app folder, use
+`PPhandcontrol-windows-x64.zip` from the
+[latest GitHub Release](https://github.com/mohamedsh283/PPhandcontrol/releases/latest).
 
 Open [`tutorial/index.html`](tutorial/index.html) in a browser for the illustrated,
 offline quick guide. The [complete tutorial](tutorial/README.md) includes viewer

@@ -135,6 +135,8 @@ def main() -> int:
         raise FileNotFoundError(f"Expected executable: {executable}")
     for name in ("README.md", "LICENSE", "CREDITS.md", "THIRD_PARTY_NOTICES.md"):
         shutil.copy2(ROOT / name, application / name)
+    shutil.copy2(ROOT / "LICENSE", application / "License.txt")
+    shutil.copy2(ROOT / "tutorial" / "How to use.txt", application / "How to use.txt")
     shutil.copytree(ROOT / "tutorial", application / "tutorial", dirs_exist_ok=True)
     model_notices = application / "models"
     model_notices.mkdir()

@@ -24,6 +24,15 @@ Do not commit virtual environments or EXEs. Publish the ZIP and checksum as
 GitHub Release assets. The binary is unsigned; codesigning can be added later
 when the author has a signing certificate.
 
+The repository also contains the complete extracted application in
+`Download/PPhandcontrol`, linked from the main README's **Download and run**
+section. Export a validated release there with
+`python scripts/export_download.py path/to/PPhandcontrol-windows-x64.zip`;
+keep its `SHA256SUMS.txt` beside the ZIP. The exporter verifies the checksum,
+preserves the runtime bytes, and adds `License.txt` and `How to use.txt` at the
+top of the app folder. The committed distribution's `.pyd` files must remain
+tracked; the Git ignore exceptions and attributes preserve them.
+
 All Python dependency versions are pinned. ZIP filenames are sorted and entry
 timestamps use `SOURCE_DATE_EPOCH` (default 2026-01-01 UTC). PyInstaller artifacts
 can still differ with the Windows image, Python patch version, dependency

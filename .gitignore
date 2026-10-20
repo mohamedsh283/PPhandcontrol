@@ -15,3 +15,7 @@ Thumbs.db
 .vscode/
 coverage.xml
 .coverage
+
+# The ready-to-run download needs its bundled native Python modules (.pyd).
+!Download/
+!Download/**

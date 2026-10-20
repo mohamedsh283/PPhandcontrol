@@ -1,0 +1,43 @@
+PPhandcontrol Free Use and Attribution License, version 1.0
+
+Copyright (c) 2026 Mohamed Sherif. All rights reserved except as granted below.
+
+1. Grant of permission
+Subject to these terms, you may use this software for any purpose, copy it,
+study its source, modify it, and redistribute unmodified or modified copies,
+in source or executable form, free of charge.
+
+2. No sale
+You may not sell, sublicense for a fee, rent, or charge for access to this
+software or modified versions. You may not bundle it into a paid software
+product or paid software distribution. Using the software internally while
+performing paid work or giving a paid presentation is allowed; this does not
+grant permission to charge others for the software itself.
+
+3. Attribution and modifications
+Retain this license, the copyright notice, and CREDITS.md in all redistributed
+copies. Credit Mohamed Sherif for the original PPhandcontrol work. Do not claim
+that the original software or original work is your own. Clearly identify your
+modifications and the person or organization responsible for them. Do not imply
+endorsement by the original author or by third-party contributors.
+
+4. Third-party components
+This license applies only to original PPhandcontrol material. Third-party
+libraries, models, fonts, runtimes, and other components remain governed by
+their own licenses, which take precedence for those components. Nothing here
+restricts rights granted by their licenses. See THIRD_PARTY_NOTICES.md and the
+licenses included in the executable distribution.
+
+5. Termination
+The permissions in this license terminate if you violate its conditions.
+
+6. Disclaimer
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. TO THE MAXIMUM EXTENT PERMITTED
+BY APPLICABLE LAW, THE AUTHOR AND CONTRIBUTORS SHALL NOT BE LIABLE FOR ANY
+CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT, OR OTHERWISE,
+ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR ITS USE.
+
+This is a custom source-available license. Its sale restrictions mean it is
+not an OSI-approved open-source license.
