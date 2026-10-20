@@ -1,0 +1,65 @@
+name: Windows build and release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.10'
+          architecture: x64
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+      - name: Install pinned dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Test and package offline app
+        run: python scripts/build.py
+      - name: Show packaged smoke-test report
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path dist/self-test.json) { Get-Content dist/self-test.json }
+          elseif (Test-Path build/source-self-test.json) { Get-Content build/source-self-test.json }
+      - name: Upload validated portable build
+        uses: actions/upload-artifact@v4
+        with:
+          name: PPhandcontrol-windows-x64
+          if-no-files-found: error
+          path: |
+            dist/PPhandcontrol-windows-x64.zip
+            dist/SHA256SUMS.txt
+            dist/self-test.json
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: PPhandcontrol-windows-x64
+          path: release
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$RELEASE_TAG" release/PPhandcontrol-windows-x64.zip release/SHA256SUMS.txt --verify-tag --title "PPhandcontrol $RELEASE_TAG" --notes-file tutorial/release-notes-v1.0.0.md
