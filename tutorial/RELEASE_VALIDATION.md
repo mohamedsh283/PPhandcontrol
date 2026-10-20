@@ -1,15 +1,21 @@
-# Version 1.1.0 validation
+# Version 1.1.1 validation
 
-- 80 automated tests pass for thumbs, pointing swipes, mode/settings migration,
+- 82 automated tests pass for thumbs, pointing swipes, settings migration,
   duplicate prevention, camera lifecycle, and Windows navigation commands.
-- The actual offline model correctly classified Google's thumbs-up sample,
-  its horizontal mirror, and its rotated thumbs-down variant. Holding each
-  classification produced exactly one correct navigation command.
-- Synthetic 3D landmarks test both hands and an index finger directed into
-  the camera, along with rejection of open palms and vertical movement.
-- The source runtime smoke test loads the Gesture Recognizer and initializes
-  Tk without opening a camera. Windows release CI requires the same frozen-EXE
-  smoke test before publication; see self-test.json in the download.
+- New SDK integration tests construct the actual MediaPipe options and run
+  the complete camera worker with the bundled model on a synthetic video
+  frame. Only the hardware capture is replaced in this test.
+- A local camera-0 startup check produced a 640 x 480 frame, completed model
+  inference, and released the camera. It saved no images and sent no keys.
+- The source runtime smoke test passes using the exact camera configuration
+  and initializes Tk. Windows release CI requires the same frozen-EXE smoke
+  test before publication; camera_configuration must be passed in self-test.json.
+- The earlier 1.1.0 smoke test used separate settings and missed a misspelled
+  classifier argument in the camera worker. Version 1.1.1 fixes that argument
+  and shares the configuration between the worker and smoke test.
+- Previous actual-model sample checks classified Google's thumbs-up sample,
+  its mirror, and its rotated thumbs-down variant. Synthetic 3D landmarks
+  cover pointing into the camera, both hands and unintended movement rejection.
 
 Live thumb/pointing accuracy and full viewer rehearsal on the user's hardware
 are not measured by these checks. Use VALIDATION.md before presenting.

@@ -47,7 +47,7 @@ and [Tk](https://github.com/tcltk/tk/blob/core-8-6-branch/license.terms).
 
 Main-branch pushes and pull requests run the Windows build and upload the ZIP,
 checksum, and smoke-test report as Actions artifacts. Pushing a version tag
-such as `v1.1.0` runs the same validation and publishes a GitHub Release with
+such as `v1.1.1` runs the same validation and publishes a GitHub Release with
 the ZIP and checksum using the workflow's scoped `GITHUB_TOKEN`.
 
 Before tagging a later release, update the package version and release notes.

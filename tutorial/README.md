@@ -1,4 +1,4 @@
-# Quick tutorial — version 1.1.0
+# Quick tutorial — version 1.1.1
 
 [Open the illustrated guide](index.html) or [read the plain-text instructions](How%20to%20use.txt).
 

@@ -10,6 +10,7 @@ if __package__ in (None, ""):
 
 from pphandcontrol import __version__
 from pphandcontrol.paths import model_path, verify_model
+from pphandcontrol.recognition import recognizer_options
 
 
 def self_test() -> dict:
@@ -23,11 +24,7 @@ def self_test() -> dict:
     import ctypes
 
     verify_model()
-    options = mp.tasks.vision.GestureRecognizerOptions(
-        base_options=mp.tasks.BaseOptions(model_asset_path=str(model_path())),
-        running_mode=mp.tasks.vision.RunningMode.VIDEO,
-        num_hands=2,
-    )
+    options = recognizer_options(model_path())
     with mp.tasks.vision.GestureRecognizer.create_from_options(options) as detector:
         result = detector.recognize_for_video(mp.Image(
             image_format=mp.ImageFormat.SRGB, data=np.zeros((480, 640, 3), dtype=np.uint8)), 1)
@@ -42,7 +39,7 @@ def self_test() -> dict:
         root.destroy()
     assert ctypes.sizeof(INPUT) == 40, "Expected Windows x64 INPUT layout"
     assert isinstance(create_detector(), ThumbDetector)
-    return {"version": __version__, "result": "passed", "model": "Gesture Recognizer loaded and inferred offline", "gesture_modes": list(MODES), "default_mode": "Thumbs", "tk": "passed", "opencv": cv2.__version__, "camera_opened": False, "navigation_sent": False}
+    return {"version": __version__, "result": "passed", "model": "Gesture Recognizer loaded and inferred offline", "camera_configuration": "passed", "gesture_modes": list(MODES), "default_mode": "Thumbs", "tk": "passed", "opencv": cv2.__version__, "camera_opened": False, "navigation_sent": False}
 
 
 def main() -> int:

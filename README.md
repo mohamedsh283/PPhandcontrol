@@ -5,7 +5,7 @@ Control your PowerPoint presentations and PDFs with hand gestures, using only yo
 > [!IMPORTANT]
 > **Setup takes about 2 minutes after downloading. Follow the Windows steps below in order and keep the entire app folder together.** This app is free and unsigned, so Windows may show a first-run warning. If device policy blocks the EXE, contact your administrator or use the source setup below.
 
-**Windows 10/11 x64 · Version 1.1.0 · Created by Mohamed Sherif.**
+**Windows 10/11 x64 · Version 1.1.1 · Created by Mohamed Sherif.**
 
 ![Thumbs up: Next; thumbs down: Previous. Optional pointing swipes: left Next, right Previous.](tutorial/gestures.svg)
 
@@ -26,6 +26,9 @@ when upgrading; close the old app and extract into a fresh folder.
 
 The [extracted app folder](Download/PPhandcontrol) is also in this repository.
 Read its **How to use.txt**, or open [the illustrated offline guide](tutorial/index.html).
+
+**Version 1.1.1 fixes the gesture recognizer startup error in 1.1.0.**
+Close the old app and extract the new download into a fresh folder.
 
 ## Two gesture modes
 

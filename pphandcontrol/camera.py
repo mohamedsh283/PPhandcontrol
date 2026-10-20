@@ -7,6 +7,7 @@ from time import monotonic
 from typing import Any
 
 from .gestures import HandSample
+from .recognition import recognizer_options
 
 
 @dataclass(frozen=True)
@@ -63,15 +64,7 @@ class TrackingWorker(Thread):
             capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
             capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
             capture.set(cv2.CAP_PROP_FPS, 30)
-            options = mp.tasks.vision.GestureRecognizerOptions(
-                base_options=mp.tasks.BaseOptions(model_asset_path=str(self.model_path)),
-                running_mode=mp.tasks.vision.RunningMode.VIDEO,
-                num_hands=2,
-                min_hand_detection_confidence=0.5,
-                min_hand_presence_confidence=0.5,
-                min_tracking_confidence=0.5,
-                canned_gestures_classifier_options=mp.tasks.components.processors.ClassifierOptions(score_threshold=0.5),
-            )
+            options = recognizer_options(self.model_path)
             landmarker = mp.tasks.vision.GestureRecognizer.create_from_options(options)
             last_ms = -1
             failures = 0
