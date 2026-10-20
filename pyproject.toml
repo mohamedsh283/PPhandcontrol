@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools==84.2.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PPhandcontrol"
+version = "1.0.0"
+description = "Local webcam swipe controls for Windows presentations and PDF viewers"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = {file = "LICENSE"}
+authors = [{name = "Mohamed Sherif"}]
+dynamic = ["dependencies"]
+
+[project.urls]
+Repository = "https://github.com/mohamedsh283/PPhandcontrol"
+Issues = "https://github.com/mohamedsh283/PPhandcontrol/issues"
+
+[tool.setuptools]
+packages = ["pphandcontrol"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
