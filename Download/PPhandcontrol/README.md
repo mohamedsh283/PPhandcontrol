@@ -2,6 +2,8 @@
 
 Created by **Mohamed Sherif**. Windows 10/11 x64.
 
+**Thumbs (default):** thumbs up = Next; thumbs down = Previous. **Point & swipe (optional):** index finger toward the camera, left = Next; right = Previous. Relax your thumb/finger before repeating a command.
+
 > [!IMPORTANT]
 > **Keep this entire folder together, including `_internal`.** Read **How to use.txt**, then start **PPhandcontrol.exe**. The app is free and unsigned, so Windows may show a first-run security warning.
 

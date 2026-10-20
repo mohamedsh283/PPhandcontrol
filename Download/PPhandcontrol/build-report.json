@@ -1,10 +1,10 @@
 {
   "application": "PPhandcontrol",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "python": "3.12.10",
   "platform": "Windows-2025Server-10.0.26100-SP0",
   "architecture": "x64",
-  "model_sha256": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+  "model_sha256": "97952348cf6a6a4915c2ea1496b4b37ebabc50cbbf80571435643c455f2b0482",
   "validation": {
     "unit_tests": "passed",
     "frozen_offline_model_and_tk_smoke_test": "passed",

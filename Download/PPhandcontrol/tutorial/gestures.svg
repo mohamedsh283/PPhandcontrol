@@ -1,26 +1,14 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="420" viewBox="0 0 1120 420" role="img" aria-labelledby="title desc">
-  <title id="title">Swipe directions in the mirrored camera preview</title>
-  <desc id="desc">An open palm swiping left advances the slide. An open palm swiping right goes to the previous slide. Hold still between gestures.</desc>
-  <defs>
-    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 9 4.5 0 9Z" fill="#58e2c2"/></marker>
-    <g id="hand" fill="#eaf3fd" stroke="#8bb1d5" stroke-width="3" stroke-linejoin="round">
-      <path d="M-48 53 -76 8 Q-84 -6 -74 -13 Q-63 -20 -55 -6 L-39 15 -39 -66 Q-39 -80 -27 -80 Q-15 -80 -15 -66 L-15 -93 Q-15 -107 -3 -107 Q9 -107 9 -93 L9 -68 9 -84 Q9 -98 21 -98 Q33 -98 33 -84 L33 -57 33 -64 Q33 -78 45 -78 Q57 -78 57 -64 L57 32 Q57 65 35 82 L-26 82 Q-42 72 -48 53Z"/>
-      <path d="M-28 26Q-3 11 32 26M-20 47Q0 34 29 47" fill="none" opacity=".55"/>
-    </g>
-  </defs>
-  <rect width="1120" height="420" rx="24" fill="#101e30"/>
-  <text x="40" y="47" fill="#b3c6db" font-family="Segoe UI,Arial,sans-serif" font-size="17" letter-spacing="2">YOUR MIRRORED CAMERA PREVIEW · STANDARD DIRECTIONS</text>
-  <rect x="32" y="74" width="516" height="280" rx="18" fill="#192d45" stroke="#31506e"/>
-  <rect x="572" y="74" width="516" height="280" rx="18" fill="#192d45" stroke="#31506e"/>
-  <g font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">
-    <text x="290" y="116" fill="#58e2c2" font-size="24" font-weight="700">SWIPE LEFT → NEXT</text>
-    <text x="830" y="116" fill="#58e2c2" font-size="24" font-weight="700">SWIPE RIGHT → PREVIOUS</text>
-    <use href="#hand" transform="translate(365 246) scale(.79)"/>
-    <use href="#hand" transform="translate(755 246) scale(.79)"/>
-    <path d="M282 223H125" stroke="#58e2c2" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <path d="M838 223H995" stroke="#58e2c2" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)"/>
-    <text x="290" y="331" fill="#b3c6db" font-size="16">One slide, animation step, or page forward</text>
-    <text x="830" y="331" fill="#b3c6db" font-size="16">One slide, animation step, or page back</text>
-    <text x="560" y="389" fill="#b3c6db" font-size="18">Open one palm · Hold still to arm · Swipe horizontally · Hold still again</text>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="560" viewBox="0 0 1120 560" role="img" aria-labelledby="title desc">
+<title id="title">Thumbs default mode and optional pointing swipes</title><desc id="desc">Thumbs up is Next and thumbs down is Previous. In Point and swipe mode, left is Next and right is Previous. Relax between commands.</desc>
+<rect width="1120" height="560" rx="24" fill="#101e30"/>
+<g font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">
+<text x="560" y="43" fill="#58e2c2" font-size="20" font-weight="700">DEFAULT MODE: THUMBS</text>
+<rect x="30" y="65" width="520" height="210" rx="18" fill="#192d45"/><rect x="570" y="65" width="520" height="210" rx="18" fill="#192d45"/>
+<text x="290" y="152" font-family="Segoe UI Emoji,Apple Color Emoji,sans-serif" font-size="76">👍</text><text x="830" y="152" font-family="Segoe UI Emoji,Apple Color Emoji,sans-serif" font-size="76">👎</text>
+<text x="290" y="204" fill="#eaf3fd" font-size="26" font-weight="700">THUMBS UP → NEXT</text><text x="830" y="204" fill="#eaf3fd" font-size="26" font-weight="700">THUMBS DOWN → PREVIOUS</text>
+<text x="560" y="310" fill="#58e2c2" font-size="20" font-weight="700">OPTIONAL MODE: POINT &amp; SWIPE</text>
+<rect x="30" y="332" width="520" height="134" rx="18" fill="#192d45"/><rect x="570" y="332" width="520" height="134" rx="18" fill="#192d45"/>
+<text x="290" y="385" fill="#eaf3fd" font-size="27" font-weight="700">← LEFT: NEXT</text><text x="830" y="385" fill="#eaf3fd" font-size="27" font-weight="700">RIGHT: PREVIOUS →</text>
+<text x="290" y="430" fill="#b3c6db" font-size="17">Index finger extended toward the camera</text><text x="830" y="430" fill="#b3c6db" font-size="17">Other fingers folded · move horizontally</text>
+<text x="560" y="510" fill="#eaf3fd" font-size="19">One command per gesture · Relax your thumb/finger before repeating</text><text x="560" y="540" fill="#b3c6db" font-size="16">P: pause/resume · Q: quit · Global: Ctrl+Alt+P / Ctrl+Alt+Q</text>
+</g></svg>

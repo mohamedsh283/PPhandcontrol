@@ -43,6 +43,9 @@ def main() -> None:
     (app / "README.md").write_text(
         "# PPhandcontrol — ready-to-run Windows folder\n\n"
         "Created by **Mohamed Sherif**. Windows 10/11 x64.\n\n"
+        "**Thumbs (default):** thumbs up = Next; thumbs down = Previous. "
+        "**Point & swipe (optional):** index finger toward the camera, left = Next; right = Previous. "
+        "Relax your thumb/finger before repeating a command.\n\n"
         "> [!IMPORTANT]\n"
         "> **Keep this entire folder together, including `_internal`.** "
         "Read **How to use.txt**, then start **PPhandcontrol.exe**. "

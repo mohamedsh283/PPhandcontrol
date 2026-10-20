@@ -1,7 +1,12 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "result": "passed",
-  "model": "loaded and inferred offline",
+  "model": "Gesture Recognizer loaded and inferred offline",
+  "gesture_modes": [
+    "Thumbs",
+    "Point & swipe"
+  ],
+  "default_mode": "Thumbs",
   "tk": "passed",
   "opencv": "4.11.0",
   "camera_opened": false,

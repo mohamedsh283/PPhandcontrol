@@ -1,11 +1,13 @@
-# Offline hand landmark model
+# Offline gesture model
 
-Google MediaPipe Hand Landmarker, float16 model bundle version 1.
+Google MediaPipe Gesture Recognizer, float16 bundle version 1. It includes
+hand landmark tracking and a trained classifier for thumbs up/down and other
+standard poses. Both app modes share its hand landmarks.
 
-- Source: https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task
-- Documentation: https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker
-- License: Apache License 2.0; see `LICENSE` in this folder.
-- SHA-256: `fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1`
+- Source: https://storage.googleapis.com/mediapipe-models/gesture_recognizer/gesture_recognizer/float16/1/gesture_recognizer.task
+- Documentation: https://ai.google.dev/edge/mediapipe/solutions/vision/gesture_recognizer
+- License: Apache License 2.0; see LICENSE in this folder.
+- SHA-256: 97952348cf6a6a4915c2ea1496b4b37ebabc50cbbf80571435643c455f2b0482
 
-The app loads this file locally. It does not download a model at launch.
-This third-party model retains its own terms and is not covered by PPhandcontrol's custom license.
+The app loads the bundled file locally. No model download or network access
+is required at runtime. The model retains its own license terms.
