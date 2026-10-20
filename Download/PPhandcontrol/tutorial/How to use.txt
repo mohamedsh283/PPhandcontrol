@@ -1,4 +1,4 @@
-PPhandcontrol 1.1.0 - How to use
+PPhandcontrol 1.1.1 - How to use
 Created by Mohamed Sherif | Windows 10/11 x64
 
 START

@@ -1,9 +1,9 @@
-# Live rehearsal checklist — version 1.1.0
+# Live rehearsal checklist — version 1.1.1
 
 Record Windows/camera/viewer versions, lighting, distance and sensitivity here.
 Empty boxes mean not checked. Automated tests do not measure live accuracy.
 
-- [ ] New EXE reports v1.1.0 and defaults to Thumbs on a fresh settings file.
+- [ ] New EXE reports v1.1.1 and defaults to Thumbs on a fresh settings file.
 - [ ] Camera, mode, sensitivity and profile persist; every launch starts paused.
 - [ ] Thumbs up sends Next; thumbs down sends Previous after a short hold.
 - [ ] Holding a thumb for five seconds sends exactly one command.

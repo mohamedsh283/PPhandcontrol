@@ -1,6 +1,6 @@
 {
   "application": "PPhandcontrol",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "python": "3.12.10",
   "platform": "Windows-2025Server-10.0.26100-SP0",
   "architecture": "x64",
